@@ -4,7 +4,7 @@
 
 void Application::setup()
 {
-  ofSetWindowTitle("Projet Session");
+  ofSetWindowTitle("Driewer");
 
   setupGui();
   renderer.setup();
