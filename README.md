@@ -1,35 +1,34 @@
-# Prérequis
+# Prerequisites
 ------------
 
-Ce projet nécessite les éléments suivants :
-* OpenGL 3.3 ou une version ultérieure
+This project requires:
+* OpenGL 3.3 or later
 * openFrameworks 0.12.0
 
-Description du projet
---------------------
+Description of the Project
+-------------------------
 
-Ce projet représente notre premier essai de création d'un moteur graphique utilisant des shaders écrits en GLSL. Il intègre l'utilisation de textures, de matériaux et de lumières.
+This project represents our first attempt at creating a graphics engine using shaders written in GLSL. It integrates the use of textures, materials, and lighting.
 
 Sources
 --------
 
-Nous avons utilisé plusieurs ressources externes pour ce projet :
+We have used several external resources for this project:
 
 Textures
 ---------
 
-Les textures utilisées dans ce projet proviennent du site web Polyhaven.
+The textures used in this project come from Polyhaven's website.
 
-Géométries
+Geometries
 ------------
 
-Nous avons utilisé des géométrie fournies par openFrameworks.
+We have used geometries provided by openFrameworks.
 
 Addons
 ------
 
-Nous avons utilisé les addons suivants :
-
+We have used the following addons:
 * ofxAssimpModelLoader
 * ofxGui
 * ofxRayTracer
@@ -38,12 +37,10 @@ Nous avons utilisé les addons suivants :
 Inspiration
 -------------
 
-Nous nous sommes inspirés des shaders provenant des dépôts git suivants :
-
-* ShadersLibrary de leozimmerman
-* ofxRayTracer de edap
-* ofxShadersFX de Scylardor
-
+We were inspired by shaders from the following Git repositories:
+* ShadersLibrary by leozimmerman
+* ofxRayTracer by edap
+* ofxShadersFX by Scylardor
 
 Screenshots
 ------------
