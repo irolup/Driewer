@@ -43,3 +43,13 @@ Nous nous sommes inspirés des shaders provenant des dépôts git suivants :
 * ShadersLibrary de leozimmerman
 * ofxRayTracer de edap
 * ofxShadersFX de Scylardor
+
+
+Screenshots
+------------
+
+Here are some examples of the shaders in action:
+
+![Blinn-Phong Shader](https://raw.githubusercontent.com/irolup/Driewer/master/example_screenshots/blinn_phong_shader.png)
+
+![PBR (Physically-Based Rendering) Shader](https://raw.githubusercontent.com/irolup/Driewer/master/example_screenshots/pbr_shader.png)
