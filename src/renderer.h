@@ -115,6 +115,9 @@ public:
     ofCylinderPrimitive cylinder;
     //box cubemap
     ofBoxPrimitive cube_map_tracer;
+
+    void update_texture_default();
+    void update_texture_pbr();
     
     float scale_plane;
     void setupPrimitives();
@@ -259,6 +262,14 @@ public:
     ofImage texture_cylinder_roughness;
     ofImage texture_cylinder_occlusion;
     ofImage texture_cylinder_normal;
+
+    //texture arbitrary
+    ofImage texture_arbitrary_diffuse;
+    ofImage texture_arbitrary_metallic;
+    ofImage texture_arbitrary_roughness;
+    ofImage texture_arbitrary_occlusion;
+    ofImage texture_arbitrary_normal;
+    void setup_texture_arbitrary();
 
     void pbr_setup();
     void pbr_reset();

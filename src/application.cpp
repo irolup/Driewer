@@ -123,6 +123,7 @@ void Application::keyReleased(int key)
     break;
         
     case '1':
+      renderer.update_texture_default();
       renderer.shaderManager.reload();
       renderer.shaderManager.load("shaders/Phong_Blinn_tex");
       ofLog() << "<select shader: Blinn Phong>";
@@ -158,7 +159,7 @@ void Application::keyReleased(int key)
       ofLog() << "<select shader: Flat>";
       break;
     case '8':
-        renderer.shaderManager.reload();
+      renderer.update_texture_pbr();
       renderer.shaderManager.load("shaders/pbr");
       ofLog() << "<select shader: PBR>";
       break;
@@ -263,9 +264,6 @@ void Application::keyReleased(int key)
       is_key_press_page_down = false;
       break;
     case '-':
-      renderer.shaderManager.setTexture(&renderer.colorTexture);
-      //normaltexture reference vers une image de texture normal
-      renderer.shaderManager.setNormalMapTexture(&renderer.normalTexture);
       break;
 
     //changer de material key f5 f6 f7
@@ -566,6 +564,7 @@ void Application::update_tessellation()
   renderer.tessLevelInner = tessLevelInner;
   renderer.tessLevelOuter = tessLevelOuter;
 }
+
 
 void Application::exit()
 {

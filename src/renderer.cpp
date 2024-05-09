@@ -25,10 +25,9 @@ void Renderer::setup()
   //setup material
   setupMaterial();
 
+  setup_texture_arbitrary();
+
   //setup courbe de bezier et surface de bezier
-
-
-
   initializeBezierSpline();
   initializeBezierSurface();
 
@@ -40,22 +39,19 @@ void Renderer::setup()
   bAmbientLight.addListener(this, &Renderer::ambientLightChanged);
   bUseTexture.addListener(this, &Renderer::textureToggled);
   
-
+  shaderManager.load("shaders/Phong_Blinn_tex");
   
   colorTexture.load("textures_other/brick_diffuse.jpg");
   normalTexture.load("textures_other/brick_normal.jpg");
-  colorTexture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
-  normalTexture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
-
   metal_Texture.load("textures_other/brick_metal.jpg");
   roughness_Texture.load("textures_other/brick_roughness.jpg");
   occlusion_Texture.load("textures_other/brick_occlusion.jpg");
+  colorTexture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+  normalTexture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
   metal_Texture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
   roughness_Texture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
   occlusion_Texture.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
-
-
-  shaderManager.load("shaders/Phong_Blinn_tex");
+  
   shaderManager.useLight(&spotLight);
   shaderManager.useLight(&directionalLight);
   shaderManager.useLight(&pointLight);
@@ -64,17 +60,13 @@ void Renderer::setup()
   shaderManager.setMaterial(&material);
 
   //Load sphere texture
-
-
-  set_camera_active();
-
   shaderManager.setTexture(&colorTexture);
   shaderManager.setNormalMapTexture(&normalTexture);
   shaderManager.setMetalTexture(&metal_Texture);
   shaderManager.setRoughnessTexture(&roughness_Texture);
   shaderManager.setOcculsionTexture(&occlusion_Texture);
 
-
+  set_camera_active();
 
   setupPrimitives();
   initialize_cubemap();
@@ -82,7 +74,7 @@ void Renderer::setup()
   pbr_setup();
 
 
-  
+
 
   //section tessellation
   setup_tessellation();
@@ -456,6 +448,22 @@ void Renderer::stock_material_primitive()
 
 }
 
+void Renderer::update_texture_default()
+{
+  sphere.mapTexCoordsFromTexture(colorTexture.getTexture());
+  box.mapTexCoordsFromTexture(colorTexture.getTexture());
+  plane.mapTexCoordsFromTexture(colorTexture.getTexture());
+  cube_map_tracer.mapTexCoordsFromTexture(colorTexture.getTexture());
+}
+
+void Renderer::update_texture_pbr()
+{
+  sphere.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
+  box.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
+  plane.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
+  cube_map_tracer.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
+}
+
 void Renderer::setupPrimitives()
 {
   //Center
@@ -468,8 +476,10 @@ void Renderer::setupPrimitives()
   sphere.setPosition(position_sphere);
   sphere.setResolution(20);
   sphere.setRadius(radius);
-  //sphere.mapTexCoordsFromTexture(colorTexture.getTexture());
-  //sphere.setMode(OF_PRIMITIVE_TRIANGLES);
+  sphere.mapTexCoordsFromTexture(colorTexture.getTexture());
+  //sphere.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
+  sphere.setMode(OF_PRIMITIVE_TRIANGLES);
+
 
   position_box = ofVec3f{0.0f, 3.0f, -6.0f};
   box.setPosition(position_box);
@@ -906,7 +916,6 @@ void Renderer::setup_primitives()
 
 void Renderer::pbr_setup()
 {
-  //ofSetBackgroundColor(0);
   ofDisableArbTex();
 
   // charger, compiler et linker les sources des shaders
@@ -1158,6 +1167,23 @@ void Renderer::drawScene_tess()
   boxVbo.drawElements(GL_PATCHES,  boxVbo.getNumIndices());
   ofPopMatrix();
   shader_tessellation.end();
+}
+
+void Renderer::setup_texture_arbitrary()
+{
+  ofDisableArbTex();
+  texture_arbitrary_diffuse.load("textures_other/brick_diffuse.jpg");
+  texture_arbitrary_metallic.load("textures_other/brick_metal.jpg");
+  texture_arbitrary_roughness.load("textures_other/brick_roughness.jpg");
+  texture_arbitrary_occlusion.load("textures_other/brick_occlusion.jpg");
+  texture_arbitrary_normal.load("textures_other/brick_normal.jpg");
+
+  texture_arbitrary_diffuse.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+  texture_arbitrary_metallic.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+  texture_arbitrary_roughness.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+  texture_arbitrary_occlusion.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+  texture_arbitrary_normal.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+  ofEnableArbTex();
 }
 
 void Renderer::exit()
