@@ -3,7 +3,7 @@
 void Renderer::setup()
 {
 
-  ofSetFrameRate(60);
+  ofSetFrameRate(30);
   ofSetLogLevel(OF_LOG_VERBOSE);
 
 
