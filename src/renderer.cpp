@@ -3,7 +3,7 @@
 void Renderer::setup()
 {
 
-  ofSetFrameRate(30);
+  ofSetFrameRate(60);
   ofSetLogLevel(OF_LOG_VERBOSE);
 
 
@@ -73,9 +73,6 @@ void Renderer::setup()
 
   pbr_setup();
 
-
-
-
   //section tessellation
   setup_tessellation();
 
@@ -98,6 +95,14 @@ void Renderer::update()
   cam_update();
   light_update();
   pbr_update();
+}
+
+void Renderer::update_potato_pc()
+{
+  center_x = ofGetWidth() / 2.0f;
+  center_y = ofGetHeight() / 2.0f;
+  cam_update();
+  light_update();
 }
 
 void Renderer::draw()
@@ -128,78 +133,49 @@ void Renderer::draw()
   ofDisableDepthTest();
   ofDrawBitmapString(shaderManager.shaderName(), 20, ofGetHeight()-30);
 
-  //spline de Bézier
-  if (showBezierSpline) {
-      
-      ofSetColor(ofColor::green);
-      ofPolyline line;
-      for (size_t i = 0; i < bezierControlPoints.size(); i++) {
-          line.curveTo(bezierControlPoints[i]);
-      }
-      line.draw();
-
-      for (size_t i = 1; i < bezierControlPoints.size() - 1; i++) {
-          ofSetColor(ofColor::purple);
-          ofDrawCircle(bezierControlPoints[i], 12);
-
-      }
-  }
-
-  // surface de bezier
-  if (showBezierSurface) {
-      ofPoint surfaceCenter(0, 0, 0);
-      int totalPoints = 0;
-      for (const auto& row : bezierSurfaceControlPoints) {
-          for (const auto& point : row) {
-              surfaceCenter += point;
-              totalPoints++;
-          }
-      }
-      surfaceCenter /= totalPoints;
-
-      float centerX = ofGetWidth() / 2.0f;
-      float centerY = ofGetHeight() / 2.0f;
-      ofPoint windowCenter(centerX, centerY, 0);
-      ofPoint translation = windowCenter - surfaceCenter;
-
-      ofPushMatrix();
-
-      ofTranslate(translation.x, translation.y, translation.z);
-
-      ofTranslate(surfaceCenter.x, surfaceCenter.y, surfaceCenter.z);
-      ofRotateYDeg(ofGetElapsedTimef() * 20);
-      ofTranslate(-surfaceCenter.x, -surfaceCenter.y, -surfaceCenter.z);
-
-      for (int i = 0; i < bezierSurfaceControlPoints.size() - 1; i++) {
-          for (int j = 0; j < bezierSurfaceControlPoints[i].size() - 1; j++) {
-
-              ofSetColor(100 + bezierSurfaceControlPoints[i][j].z, 100, 255 - bezierSurfaceControlPoints[i][j].z);
-              ofDrawLine(bezierSurfaceControlPoints[i][j], bezierSurfaceControlPoints[i][j + 1]);
-              ofDrawLine(bezierSurfaceControlPoints[i][j], bezierSurfaceControlPoints[i + 1][j]);
-          }
-      }
-
-      for (int i = 0; i < bezierSurfaceControlPoints.size() - 1; i++) {
-          ofDrawLine(bezierSurfaceControlPoints[i][bezierSurfaceControlPoints.size() - 1], bezierSurfaceControlPoints[i + 1][bezierSurfaceControlPoints.size() - 1]);
-      }
-
-      for (int j = 0; j < bezierSurfaceControlPoints[0].size() - 1; j++) {
-          ofDrawLine(bezierSurfaceControlPoints[bezierSurfaceControlPoints.size() - 1][j], bezierSurfaceControlPoints[bezierSurfaceControlPoints.size() - 1][j + 1]);
-      }
-
-      ofSetColor(ofColor::orange);
-      for (const auto& row : bezierSurfaceControlPoints) {
-          for (const auto& point : row) {
-              ofDrawSphere(point, 2);
-          }
-      }
-
-      ofPopMatrix();  // etat de la matrice
-  }
+  draw_bezier_spline();
+  draw_bezier_surface();
 
 }
 
+void Renderer::setup_potato_pc()
+{
+  ofSetFrameRate(30);
+  shaderManager.reload();
+  shaderManager.load("shaders/normLambert");
+  //mettre le shader actif a celui le moins demandant
+  //comme dans app quand on change shader mais mettre genre lambert
+}
 
+void Renderer::draw_potato_pc()
+{
+    //cam multiple
+  camera->begin();
+
+  ofEnableDepthTest();
+  if(is_visible_frustum)
+  {
+    cam_draw_frustum();
+  }
+    
+  ofDrawAxis(1000);
+    
+  shaderManager.begin();
+  drawScene();
+  drawLights();
+  shaderManager.end();
+  draw_cube_map();
+  //drawScene_tess();
+  camera->end();
+
+
+  //pbr_draw();
+
+  
+  ofDisableDepthTest();
+  ofDrawBitmapString(shaderManager.shaderName(), 20, ofGetHeight()-30);
+
+}
 
 
 
@@ -394,6 +370,81 @@ void Renderer::initializeBezierSurface() {
                 zValue);
         }
     }
+}
+
+void Renderer::draw_bezier_spline()
+{
+//spline de Bézier
+  if (showBezierSpline) {
+      
+      ofSetColor(ofColor::green);
+      ofPolyline line;
+      for (size_t i = 0; i < bezierControlPoints.size(); i++) {
+          line.curveTo(bezierControlPoints[i]);
+      }
+      line.draw();
+
+      for (size_t i = 1; i < bezierControlPoints.size() - 1; i++) {
+          ofSetColor(ofColor::purple);
+          ofDrawCircle(bezierControlPoints[i], 12);
+
+      }
+  }
+}
+
+void Renderer::draw_bezier_surface()
+{
+// surface de bezier
+  if (showBezierSurface) {
+      ofPoint surfaceCenter(0, 0, 0);
+      int totalPoints = 0;
+      for (const auto& row : bezierSurfaceControlPoints) {
+          for (const auto& point : row) {
+              surfaceCenter += point;
+              totalPoints++;
+          }
+      }
+      surfaceCenter /= totalPoints;
+
+      float centerX = ofGetWidth() / 2.0f;
+      float centerY = ofGetHeight() / 2.0f;
+      ofPoint windowCenter(centerX, centerY, 0);
+      ofPoint translation = windowCenter - surfaceCenter;
+
+      ofPushMatrix();
+
+      ofTranslate(translation.x, translation.y, translation.z);
+
+      ofTranslate(surfaceCenter.x, surfaceCenter.y, surfaceCenter.z);
+      ofRotateYDeg(ofGetElapsedTimef() * 20);
+      ofTranslate(-surfaceCenter.x, -surfaceCenter.y, -surfaceCenter.z);
+
+      for (int i = 0; i < bezierSurfaceControlPoints.size() - 1; i++) {
+          for (int j = 0; j < bezierSurfaceControlPoints[i].size() - 1; j++) {
+
+              ofSetColor(100 + bezierSurfaceControlPoints[i][j].z, 100, 255 - bezierSurfaceControlPoints[i][j].z);
+              ofDrawLine(bezierSurfaceControlPoints[i][j], bezierSurfaceControlPoints[i][j + 1]);
+              ofDrawLine(bezierSurfaceControlPoints[i][j], bezierSurfaceControlPoints[i + 1][j]);
+          }
+      }
+
+      for (int i = 0; i < bezierSurfaceControlPoints.size() - 1; i++) {
+          ofDrawLine(bezierSurfaceControlPoints[i][bezierSurfaceControlPoints.size() - 1], bezierSurfaceControlPoints[i + 1][bezierSurfaceControlPoints.size() - 1]);
+      }
+
+      for (int j = 0; j < bezierSurfaceControlPoints[0].size() - 1; j++) {
+          ofDrawLine(bezierSurfaceControlPoints[bezierSurfaceControlPoints.size() - 1][j], bezierSurfaceControlPoints[bezierSurfaceControlPoints.size() - 1][j + 1]);
+      }
+
+      ofSetColor(ofColor::orange);
+      for (const auto& row : bezierSurfaceControlPoints) {
+          for (const auto& point : row) {
+              ofDrawSphere(point, 2);
+          }
+      }
+
+      ofPopMatrix();  // etat de la matrice
+  }
 }
 
 void Renderer::stock_material_primitive()
@@ -993,10 +1044,6 @@ void Renderer::pbr_reset()
 
 void Renderer::pbr_update()
 {
-  // centre de la fenêtre d'affichage
-  center_x = ofGetWidth() / 2.0f;
-  center_y = ofGetHeight() / 2.0f;
-
   if (light_motion)
   {
     // transformer la lumière

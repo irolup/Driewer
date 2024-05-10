@@ -52,7 +52,9 @@ public:
     void initializeBezierSurface();
     std::vector<std::vector<ofPoint>> bezierSurfaceControlPoints;
 
-    
+    void draw_bezier_spline();
+    void draw_bezier_surface();
+
     //Materiau
     ofMaterial material;
     //material vecteur de float nax rgba quon nomme mmaterial mais cest vecteur de couleur
@@ -290,9 +292,14 @@ public:
     void setupVbos();
     void drawScene_tess();
 
+    void setup_potato_pc();
+    void draw_potato_pc();
+    
     void setup();
     void reset();
     void update();
+    void update_potato_pc();
     void draw();
+    
     void exit();
 };

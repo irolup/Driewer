@@ -15,9 +15,14 @@ public:
   //Gui section
   ofxPanel gui;
 
-
+  //Pc render setting
+  ofParameterGroup settings_parameters;
+  ofParameter<bool> b_potato_pc;
+  bool potato_pc;
+  void specs_changed(bool & b_potato_pc);
   
-//parametres
+  
+  //parametres
   ofParameterGroup lightParameters;
   
   ofParameter<int> spotCutOff; //0-90 degrees
@@ -97,7 +102,7 @@ public:
   void pbr_setup();
   void pbr_reset();
   void pbr_update();
-  void pbr_draw();
+  void pbr_draw_gui();
   void update_material_pbr();
 
   //section tesselation

@@ -9,28 +9,55 @@ void Application::setup()
   setupGui();
   renderer.setup();
   pbr_setup();
+  //pc render settings
+  potato_pc = true;
+  if(potato_pc)
+  {
+    renderer.setup_potato_pc();
+  }
 
 }
 
 void Application::update()
 {
+  time_current = ofGetElapsedTimef();
+  time_elapsed = time_current - time_last;
+  time_last = time_current;
+  renderer.speed_translation = renderer.speed_delta * time_elapsed;
 
-  update_key_camera();
-  update_key_light();
-  updateLights();
-  updateMaterial();
+  if(!potato_pc)
+  {
+    update_key_camera();
+    update_key_light();
+    updateLights();
+    updateMaterial();
 
-  pbr_update();
-  update_tessellation();
+    pbr_update();
+    update_tessellation();
 
-  renderer.update();
+    renderer.update();
+  } else {
+    update_key_camera();
+    update_key_light();
+    updateLights();
+    updateMaterial();
+    renderer.update_potato_pc();
+  }
 }
 
 void Application::draw()
 {
-  renderer.draw();
+  if (!potato_pc)
+  {
+    renderer.draw();
+  } else {
+    renderer.draw_potato_pc();
+  }
+  
+
+
   gui.draw();
-  pbr_draw();
+  pbr_draw_gui();
 }
 
 void Application::reset()
@@ -369,6 +396,10 @@ void Application::setupGui()
     
     gui.setup();
 
+    settings_parameters.setName("General settings");
+    settings_parameters.add(b_potato_pc.set("Specs switch", true));
+    b_potato_pc.addListener(this, &Application::specs_changed);
+
     lightParameters.setName("Lights");
     lightParameters.add(renderer.bPointLight.set("PointLight",true));
     lightParameters.add(renderer.bDirLight.set("DirectionalLight", true));
@@ -395,7 +426,8 @@ void Application::setupGui()
     surface_parametrique_button.setup("Surface Parametrique");
     surface_parametrique_button.addListener(this, &Application::surface_parametrique_button_pressed);
 
-    
+
+    gui.add(settings_parameters);
     gui.add(lightParameters);
     gui.add(&courbe_bezier_button);
     gui.add(&surface_parametrique_button);
@@ -410,6 +442,19 @@ void Application::setupGui()
     
 }
 
+void Application::specs_changed(bool & b_potato_pc)
+{
+  if(!potato_pc)
+  {
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/normLambert");
+  } else {
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/Phong_Blinn_tex");
+  }
+
+  potato_pc = !potato_pc;
+}
 
 void Application::courbe_bezier_button_pressed() {
     renderer.showBezierSpline = !renderer.showBezierSpline;
@@ -516,17 +561,14 @@ void Application::pbr_reset()
 
 void Application::pbr_update()
 {
-  time_current = ofGetElapsedTimef();
-  time_elapsed = time_current - time_last;
-  time_last = time_current;
-  renderer.speed_translation = renderer.speed_delta * time_elapsed;
+
 
   update_material_pbr();
 
 
 }
 
-void Application::pbr_draw()
+void Application::pbr_draw_gui()
 {
     if (toggle_ui)
     gui_pbr.draw();
