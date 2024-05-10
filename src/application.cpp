@@ -610,6 +610,7 @@ void Application::update_tessellation()
 
 void Application::exit()
 {
+  b_potato_pc.removeListener(this, &Application::specs_changed);
   courbe_bezier_button.removeListener(this, &Application::courbe_bezier_button_pressed);
   surface_parametrique_button.removeListener(this, &Application::surface_parametrique_button_pressed);
   button_reset.removeListener(this, &Application::button_reset_pressed);

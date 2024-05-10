@@ -116,7 +116,7 @@ void Renderer::draw()
     cam_draw_frustum();
   }
     
-  ofDrawAxis(1000);
+  ofDrawAxis(10);
     
   shaderManager.begin();
   drawScene();
@@ -158,7 +158,7 @@ void Renderer::draw_potato_pc()
     cam_draw_frustum();
   }
     
-  ofDrawAxis(1000);
+  ofDrawAxis(10);
     
   shaderManager.begin();
   drawScene();
