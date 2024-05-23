@@ -68,10 +68,10 @@ void Renderer::setup()
 
   set_camera_active();
 
-  setupPrimitives();
   initialize_cubemap();
 
   pbr_setup();
+  setup_primitives();
 
   //section tessellation
   setup_tessellation();
@@ -464,7 +464,7 @@ void Renderer::stock_material_primitive()
   primitives.push_back(box);
   //primitives.push_back(plane);
   primitives.push_back(cylinder);
-  primitives.push_back(cube_map_tracer);
+  //primitives.push_back(cube_map_tracer);
 
   
   lights.push_back(&pointLight);
@@ -480,21 +480,16 @@ void Renderer::stock_material_primitive()
   ofLog() << "Number of lights: " << lights.size();
   //center of scence position
   ofLog() << "Center of Scence: " << center_of_scence.getGlobalPosition();
-  width = 320;
-  height = 200;
-  nIndirectRays = 1;
-  ambientBias = 0.2f;
-  samples = 1;
-  rayTracer.setup(primitives, materials, lights, ambientBias);
-  image = initImage(width, height);
-
-  auto rect = ofRectangle(0, 0, width, height);
-  //0 jsuqua 2048
-  int n_rays = 2;
-  rayTracer.traceImage(camera_raytracer, rect, image, runInParallel, n_rays);
-
-  //export image
-  image->save("raytraced_image.png");
+  //rayTracer.setup(primitives, materials, lights, ambientBias);
+  //image = initImage(width, height);
+//
+  //auto rect = ofRectangle(0, 0, width, height);
+  ////0 jsuqua 2048
+  //int n_rays = 2;
+  //rayTracer.traceImage(camera_raytracer, rect, image, runInParallel, n_rays);
+//
+  ////export image
+  //image->save("raytraced_image.png");
   ofLog() << "Raytraced image saved";
 
 }
@@ -515,48 +510,6 @@ void Renderer::update_texture_pbr()
   cube_map_tracer.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
 }
 
-void Renderer::setupPrimitives()
-{
-  //Center
-  center_of_scence.move(0.0f, 0.0f, 0.0f);
-  glm::vec3 position_center = center_of_scence.getGlobalPosition();
-  center.set(position_center);
-
-  position_sphere = ofVec3f{0.0f, 0.0f, -5.0f};
-  radius = 1.0f;
-  sphere.setPosition(position_sphere);
-  sphere.setResolution(20);
-  sphere.setRadius(radius);
-  sphere.mapTexCoordsFromTexture(colorTexture.getTexture());
-  //sphere.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
-  sphere.setMode(OF_PRIMITIVE_TRIANGLES);
-
-
-  position_box = ofVec3f{0.0f, 3.0f, -6.0f};
-  box.setPosition(position_box);
-  box.set(1.0f);
-  box.mapTexCoordsFromTexture(colorTexture.getTexture());
-  box.setMode(OF_PRIMITIVE_TRIANGLES);
-
-  //Ajout dun plancher de type plane primitive 'a 0,0,0 de grandeur 1.0f
-  //rotate de 90 sur x
-  position_plane = ofVec3f{0.0f, -1.0f, 0.0f};
-  scale_plane = 10.0f;
-  plane.setPosition(position_plane);
-  plane.set(scale_plane, scale_plane);
-  plane.rotateDeg(90, 1, 0, 0);
-  plane.mapTexCoordsFromTexture(colorTexture.getTexture());
-  plane.setMode(OF_PRIMITIVE_TRIANGLES);
-
-
-  position_cube_map_tracer = ofVec3f{0.0f, 0.0f, -30.0f};
-  cube_map_tracer.setPosition(position_cube_map_tracer);
-  scale_cube_map_tracer = 30.0f;
-  cube_map_tracer.set(scale_cube_map_tracer);
-  cube_map_tracer.mapTexCoordsFromTexture(colorTexture.getTexture());
-  cube_map_tracer.setMode(OF_PRIMITIVE_TRIANGLES);
-
-}
 
 void Renderer::drawScene()
 {
@@ -864,7 +817,7 @@ void Renderer::draw_cube_map()
   ofPopMatrix();
 }
 
-shared_ptr<ofImage> Renderer::initImage(int _width, int _height)
+shared_ptr<ofImage> Renderer::init_raytraced_image(int _width, int _height)
 {
   shared_ptr<ofImage> img = std::make_shared<ofImage>();
   img->allocate(_width, _height, OF_IMAGE_COLOR_ALPHA);
@@ -963,6 +916,46 @@ void Renderer::setup_primitives()
   cylinder.set(radius_cylinder, height_cylinder);
   cylinder.setResolution(20, 20);
 
+    //Center
+  center_of_scence.move(0.0f, 0.0f, 0.0f);
+  glm::vec3 position_center = center_of_scence.getGlobalPosition();
+  center.set(position_center);
+
+  position_sphere = ofVec3f{0.0f, 0.0f, -5.0f};
+  radius = 1.0f;
+  sphere.setPosition(position_sphere);
+  sphere.setResolution(20);
+  sphere.setRadius(radius);
+  sphere.mapTexCoordsFromTexture(colorTexture.getTexture());
+  //sphere.mapTexCoordsFromTexture(texture_arbitrary_diffuse.getTexture());
+  sphere.setMode(OF_PRIMITIVE_TRIANGLES);
+
+
+  position_box = ofVec3f{0.0f, 3.0f, -6.0f};
+  box.setPosition(position_box);
+  box.set(1.0f);
+  box.mapTexCoordsFromTexture(colorTexture.getTexture());
+  box.setMode(OF_PRIMITIVE_TRIANGLES);
+
+  //Ajout dun plancher de type plane primitive 'a 0,0,0 de grandeur 1.0f
+  //rotate de 90 sur x
+  position_plane = ofVec3f{0.0f, -1.0f, 0.0f};
+  scale_plane = 10.0f;
+  plane.setPosition(position_plane);
+  plane.set(scale_plane, scale_plane);
+  plane.rotateDeg(90, 1, 0, 0);
+  plane.mapTexCoordsFromTexture(colorTexture.getTexture());
+  plane.setMode(OF_PRIMITIVE_TRIANGLES);
+
+
+  position_cube_map_tracer = ofVec3f{0.0f, 0.0f, -30.0f};
+  cube_map_tracer.setPosition(position_cube_map_tracer);
+  scale_cube_map_tracer = 30.0f;
+  cube_map_tracer.set(scale_cube_map_tracer);
+  cube_map_tracer.mapTexCoordsFromTexture(colorTexture.getTexture());
+  cube_map_tracer.setMode(OF_PRIMITIVE_TRIANGLES);
+
+
   //setup light
   light.setGlobalPosition(50, -175, 1);
 }
@@ -1003,8 +996,6 @@ void Renderer::pbr_setup()
   texture_cylinder_normal.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
 
   ofEnableArbTex();
-
-  setup_primitives();
 }
 
 void Renderer::pbr_reset()

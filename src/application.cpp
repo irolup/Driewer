@@ -10,11 +10,13 @@ void Application::setup()
   renderer.setup();
   pbr_setup();
   //pc render settings
-  potato_pc = true;
+  potato_pc = false;
   if(potato_pc)
   {
     renderer.setup_potato_pc();
   }
+
+  setup_menu_raytracer();
 
 }
 
@@ -43,6 +45,7 @@ void Application::update()
     updateMaterial();
     renderer.update_potato_pc();
   }
+  menu_raytracer->update();
 }
 
 void Application::draw()
@@ -58,6 +61,7 @@ void Application::draw()
 
   gui.draw();
   pbr_draw_gui();
+  menu_raytracer->draw();
 }
 
 void Application::reset()
@@ -223,10 +227,6 @@ void Application::keyReleased(int key)
     case 'y':
         is_key_press_y = false;
         break;
-    case 'v':
-      renderer.stock_material_primitive();
-      ofLog() << "<stock material>";
-        break;
     case 'i':
         is_key_press_i = false;
         break;
@@ -305,11 +305,6 @@ void Application::keyReleased(int key)
     case OF_KEY_F7:
       renderer.shaderManager.setMaterial(&renderer.material_3);
       ofLog() << "<select material: material3>";
-      break;
-    //key / for stock material from renderer
-    case '/':
-      renderer.stock_material_primitive();
-      ofLog() << "<stock material>";
       break;
     default:
       break;
@@ -626,9 +621,69 @@ map<int, imgDimension> Application::prepare_raytracer_resolution()
 
 void Application::setup_menu_raytracer()
 {
-  menu_raytracer->addHeader("Raytracer");
   vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600", "1280x768"};
+  availableResolution = prepare_raytracer_resolution();
+
+  menu_raytracer = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
+  menu_raytracer->addHeader("Raytracer");
+  ambientBias.set("Ambient bias", 0.2, 0.1, 0.6);
+  samples.set("Samples per ray", 1, 8, 32);
+  menu_raytracer->setAutoDraw(false);
+  menu_raytracer->addTextInput("message", "Ray Casting");
+  menu_raytracer->addDropdown("Resolution", options);
+  menu_raytracer->addSlider("Indirect rays per pixel", 0, 2048);
+  menu_raytracer->addSlider(ambientBias);
+  menu_raytracer->addSlider(samples);
+  runInParallel = false;
+  menu_raytracer->addToggle("Run in parallel", runInParallel);
+  menu_raytracer->addButton("start render");
+  menu_raytracer->onDropdownEvent(this, &Application::onResolutionEvent);
+  menu_raytracer->onButtonEvent(this, &Application::onRenderEvent);
+  menu_raytracer->onToggleEvent(this, &Application::onToggleEvent);
+  menu_raytracer->onSliderEvent(this, &Application::onSliderEvent);
   
+}
+
+void Application::onResolutionEvent(ofxDatGuiDropdownEvent e){
+  raytracer_options.resolution = availableResolution[int(e.child)];
+}
+
+void Application::onRenderEvent(ofxDatGuiButtonEvent e){
+    cout << e.target << endl;
+    start_raytracer(raytracer_options);
+}
+
+void Application::onToggleEvent(ofxDatGuiToggleEvent e){
+  runInParallel = e.checked;
+};
+
+void Application::onSliderEvent(ofxDatGuiSliderEvent e){
+    if (e.target->is("Ambient bias")){
+        raytracer_options.ambientBias = e.target->getValue();
+    }
+
+    if (e.target->is("Samples per ray")){
+        raytracer_options.samples = e.target->getValue();
+    }
+
+    if (e.target->is("indirect rays per pixel")){
+        raytracer_options.nIndirectRays = e.target->getValue();
+    }
+
+}
+
+void Application::start_raytracer(menu_raytracer_options opt)
+{
+  renderer.camera_raytracer.setSamples(opt.samples);
+  renderer.stock_material_primitive();
+
+  renderer.rayTracer.setup(renderer.primitives, renderer.materials, renderer.lights, opt.ambientBias);
+  renderer.raytraced_image = renderer.init_raytraced_image(opt.resolution.width, opt.resolution.height);
+  auto image_delimiter = ofRectangle(0, 0, opt.resolution.width, opt.resolution.height);
+  int n_ray = ceil(opt.nIndirectRays);
+
+  renderer.rayTracer.traceImage(renderer.camera_raytracer, image_delimiter,renderer.raytraced_image, runInParallel, n_ray);
+  renderer.raytraced_image->save("raytraced_image.png");
 }
 
 void Application::exit()

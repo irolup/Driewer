@@ -122,7 +122,6 @@ public:
     void update_texture_pbr();
     
     float scale_plane;
-    void setupPrimitives();
     void drawScene();
     void drawLights();
     //vector of position for the priumitive
@@ -207,13 +206,8 @@ public:
     //Raytracer
     ofxRayTracer rayTracer;
     ofxRTPinholeCamera camera_raytracer;
-    int width;
-    int height;
-    int nIndirectRays;
-    float ambientBias;
-    int samples;
-    shared_ptr<ofImage> image;
-    shared_ptr<ofImage> initImage(int width, int height);
+    shared_ptr<ofImage> raytraced_image;
+    shared_ptr<ofImage> init_raytraced_image(int width, int height);
     bool runInParallel = true;
 
     void light_update();

@@ -12,7 +12,10 @@ struct imgDimension{
 };
 
 struct menu_raytracer_options{
-  //mettre les options de la gui ici
+  imgDimension resolution;
+  int nIndirectRays;
+  float ambientBias;
+  int samples;
 };
 
 class Application : public ofBaseApp
@@ -127,9 +130,15 @@ public:
   void onSliderEvent(ofxDatGuiSliderEvent e);
   void onToggleEvent(ofxDatGuiToggleEvent e);
 
+  map<int, imgDimension> availableResolution;
   map<int, imgDimension> prepare_raytracer_resolution();
-  void setup_menu_raytracer();
+  ofParameter<float> ambientBias = 0.2;
+  ofParameter<int> samples = 8;
+  bool runInParallel;
+  menu_raytracer_options raytracer_options;
 
+  void setup_menu_raytracer();
+  void start_raytracer(menu_raytracer_options opt);
 
   void setup();
   void update();
