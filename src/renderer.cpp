@@ -473,24 +473,11 @@ void Renderer::stock_material_primitive()
   //lights.push_back(&ambientLight);
   //lights.push_back(&directionalLight2);
 
-
   //log number in vector
   ofLog() << "Number of materials: " << materials.size();
   ofLog() << "Number of primitives: " << primitives.size();
   ofLog() << "Number of lights: " << lights.size();
-  //center of scence position
   ofLog() << "Center of Scence: " << center_of_scence.getGlobalPosition();
-  //rayTracer.setup(primitives, materials, lights, ambientBias);
-  //image = initImage(width, height);
-//
-  //auto rect = ofRectangle(0, 0, width, height);
-  ////0 jsuqua 2048
-  //int n_rays = 2;
-  //rayTracer.traceImage(camera_raytracer, rect, image, runInParallel, n_rays);
-//
-  ////export image
-  //image->save("raytraced_image.png");
-  ofLog() << "Raytraced image saved";
 
 }
 

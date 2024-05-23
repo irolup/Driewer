@@ -102,7 +102,6 @@ public:
     vector<ofMaterial> materials;
     vector<of3dPrimitive> primitives;
     vector<ofLight*> lights;
-    float ambientTermBias = 0.5f;
     void stock_material_primitive();
 
     //Scene
