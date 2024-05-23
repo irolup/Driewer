@@ -4,7 +4,16 @@
 #include "ofxGui.h"
 #include "ofxAssimpModelLoader.h"
 #include "renderer.h"
+#include "ofxDatGui.h"
 
+struct imgDimension{
+  int width;
+  int height;
+};
+
+struct menu_raytracer_options{
+  //mettre les options de la gui ici
+};
 
 class Application : public ofBaseApp
 {
@@ -108,6 +117,19 @@ public:
   //section tesselation
   ofParameter<int> tessLevelInner, tessLevelOuter;
   void update_tessellation();
+
+  //Section menus with Datgui
+  ofxDatGui* menu_1;
+  //Gui tracer
+  ofxDatGui* menu_raytracer;
+  void onResolutionEvent(ofxDatGuiDropdownEvent e);
+  void onRenderEvent(ofxDatGuiButtonEvent e);
+  void onSliderEvent(ofxDatGuiSliderEvent e);
+  void onToggleEvent(ofxDatGuiToggleEvent e);
+
+  map<int, imgDimension> prepare_raytracer_resolution();
+  void setup_menu_raytracer();
+
 
   void setup();
   void update();

@@ -630,7 +630,7 @@ void Renderer::init_camera()
   camera_target = ofVec3f(0.0f, 60.0f, 0.0f);
 
   camera_near = 1.0f;
-  camera_far = 5000.0f;
+  camera_far = 150.0f;
 
   float verticalFieldOfView = PI / 3.0f;
   const float side = -2.0f * tan(verticalFieldOfView / 2.0f);
@@ -683,6 +683,8 @@ void Renderer::setup_camera()
       camera_back.setPosition(0.0f, 0.0f, 1.0f);
       camera_back.lookAt(ofVec3f(0.0f, 0.0f, 0.0f));
       break;
+
+    //ajouter cam player with locked mouse
 
     default:
       break;
@@ -788,7 +790,7 @@ void Renderer::initialize_cubemap()
 {
   std::string faces[6] = { "Cubemaps/posx.jpg", "Cubemaps/negx.jpg", "Cubemaps/posy.jpg", "Cubemaps/negy.jpg", "Cubemaps/posz.jpg", "Cubemaps/negz.jpg" };
   std::swap(faces[2], faces[3]);
-  cube_half_size = -100.0f;
+  cube_half_size = -50.0f;
   cube_position = ofVec3f(0.0f, 0.0f, 0.0f);
   for (int i = 0; i < 6; i++)
   {

@@ -606,7 +606,30 @@ void Application::update_tessellation()
   renderer.tessLevelInner = tessLevelInner;
   renderer.tessLevelOuter = tessLevelOuter;
 }
+map<int, imgDimension> Application::prepare_raytracer_resolution()
+{
+  map<int, imgDimension> avl;
+  imgDimension small; small.width = 1; small.height = 1;
+  imgDimension normal; normal.width = 120; normal.height = 75;
+  imgDimension medium; medium.width = 320; medium.height = 200;
+  imgDimension large; large.width = 640; large.height = 400;
+  imgDimension big; big.width = 800; big.height = 600;
+  imgDimension veryBig; veryBig.width = 1024; veryBig.height = 640;
+  avl[0] = small;
+  avl[1] = normal;
+  avl[2] = medium;
+  avl[3] = large;
+  avl[4] = big;
+  avl[5] = veryBig;
+  return avl;
+}
 
+void Application::setup_menu_raytracer()
+{
+  menu_raytracer->addHeader("Raytracer");
+  vector<string> options = {"1x1", "120x75", "320x200", "640x400","800x600", "1280x768"};
+  
+}
 
 void Application::exit()
 {
