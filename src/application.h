@@ -42,8 +42,6 @@ public:
 
 
 
-  ofxButton courbe_bezier_button;
-  ofxButton surface_parametrique_button;
   void courbe_bezier_button_pressed();
   void surface_parametrique_button_pressed();
   int selectedControlPointIndex = -1;
@@ -122,23 +120,39 @@ public:
   void update_tessellation();
 
   //Section menus with Datgui
-  ofxDatGui* menu_1;
   //Gui tracer
   ofxDatGui* menu_raytracer;
   void onResolutionEvent(ofxDatGuiDropdownEvent e);
   void onRenderEvent(ofxDatGuiButtonEvent e);
   void onSliderEvent(ofxDatGuiSliderEvent e);
   void onToggleEvent(ofxDatGuiToggleEvent e);
-
   map<int, imgDimension> availableResolution;
   map<int, imgDimension> prepare_raytracer_resolution();
   ofParameter<float> ambientBias = 0.2;
   ofParameter<int> samples = 8;
   bool runInParallel;
   menu_raytracer_options raytracer_options;
-
   void setup_menu_raytracer();
   void start_raytracer(menu_raytracer_options opt);
+
+  //Gui pour choix shaders
+  ofxDatGui* menu_graphics;
+  void setup_menu_graphics();
+  vector<string> available_shader;
+  ofxDatGuiDropdown* shader_dropdown;
+  void onShaderEvent(ofxDatGuiDropdownEvent e);
+
+  //Gui pour choix affichage dans la scene
+  ofxDatGui* menu_scene_misc;
+  void setup_menu_scene_misc();
+  ofxDatGuiFolder* misc_folder;
+  ofxDatGuiButton* show_bezier_curve_button;
+  ofxDatGuiButton* show_parametric_surface_button;
+  void courbe_bezier_button_pressed_datgui(ofxDatGuiButtonEvent e);
+  void surface_parametrique_button_pressed_datgui(ofxDatGuiButtonEvent e);
+
+  //Gui pour parametre de camera
+
 
   void setup();
   void update();

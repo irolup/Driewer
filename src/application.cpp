@@ -17,6 +17,8 @@ void Application::setup()
   }
 
   setup_menu_raytracer();
+  setup_menu_graphics();
+  setup_menu_scene_misc();
 
 }
 
@@ -62,6 +64,8 @@ void Application::draw()
   gui.draw();
   pbr_draw_gui();
   menu_raytracer->draw();
+  menu_graphics->draw();
+  menu_scene_misc->draw();
 }
 
 void Application::reset()
@@ -145,55 +149,6 @@ void Application::keyReleased(int key)
 {
   switch (key)
   {
-    case ' ':
-      cout<<"\n**********************************\n"<<endl;
-      cout<<"- RELOADING SHADER: \n"<<endl;
-      renderer.shaderManager.reload();
-      renderer.reset();
-      cout<<"\n**********************************\n"<<endl;
-    break;
-        
-    case '1':
-      renderer.update_texture_default();
-      renderer.shaderManager.reload();
-      renderer.shaderManager.load("shaders/Phong_Blinn_tex");
-      ofLog() << "<select shader: Blinn Phong>";
-      break;
-
-    case '2':
-      renderer.shaderManager.reload();
-      renderer.shaderManager.load("shaders/Phong_Phong_tex");
-      ofLog() << "<select shader: Phong>";
-      break;
-    case '3':
-      renderer.shaderManager.reload();
-      renderer.shaderManager.load("shaders/normLambert");
-      ofLog() << "<select shader: Lambert >";
-      break;
-    case '4':
-      renderer.shaderManager.reload();
-      renderer.shaderManager.load("shaders/normMapGouraud");
-      ofLog() << "<select shader: Gouraud>";
-      break;
-    case '5':
-      renderer.shaderManager.load("shaders/normCel");
-      ofLog() << "<select shader: Cel>";
-      break;
-    case '6':
-      renderer.shaderManager.reload();
-      renderer.shaderManager.load("shaders/goosh");
-      ofLog() << "<select shader: Goosh>";
-      break;
-    case '7':
-      renderer.shaderManager.reload();
-      renderer.shaderManager.load("shaders/flat");
-      ofLog() << "<select shader: Flat>";
-      break;
-    case '8':
-      renderer.update_texture_pbr();
-      renderer.shaderManager.load("shaders/pbr");
-      ofLog() << "<select shader: PBR>";
-      break;
     case 'w':
         is_key_press_w = false;
         break;
@@ -416,16 +371,8 @@ void Application::setupGui()
     materialParameters.add(emissive.set("emmisive", ofFloatColor(0.2, 1.0),
                                         ofFloatColor(0.0), ofFloatColor(1.0)));
 
-    courbe_bezier_button.setup("Courbe Bezier");
-    courbe_bezier_button.addListener(this, &Application::courbe_bezier_button_pressed);
-    surface_parametrique_button.setup("Surface Parametrique");
-    surface_parametrique_button.addListener(this, &Application::surface_parametrique_button_pressed);
-
-
     gui.add(settings_parameters);
     gui.add(lightParameters);
-    gui.add(&courbe_bezier_button);
-    gui.add(&surface_parametrique_button);
     gui.add(materialParameters);
     gui.add(renderer.bUseTexture.set("Use Texture",true));
 
@@ -686,11 +633,93 @@ void Application::start_raytracer(menu_raytracer_options opt)
   renderer.raytraced_image->save("raytraced_image.png");
 }
 
+void Application::setup_menu_graphics()
+{
+  available_shader = {"Blinn Phong", "Phong", "Lambert", 
+                      "Gouraud", "Cel", "goosh", "flat", "pbr"};
+  menu_graphics = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_LEFT);
+  menu_graphics->addHeader("Graphics");
+
+  shader_dropdown = menu_graphics->addDropdown("Shader", available_shader);
+  shader_dropdown->onDropdownEvent(this, &Application::onShaderEvent);
+}
+
+void Application::onShaderEvent(ofxDatGuiDropdownEvent e)
+{
+  switch (e.child)
+  {
+  case 0:
+    renderer.update_texture_default();
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/Phong_Blinn_tex");
+    //log pour dire quel shader
+    ofLog() << "<select shader: Blinn Phong>";
+    break;
+  case 1:
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/Phong_Phong_tex");
+    //log
+    ofLog() << "<select shader: Phong>";
+    break;
+  case 2:
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/normLambert");
+    ofLog() << "<select shader: Lambert >";
+    break;
+  case 3:
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/normMapGouraud");
+    ofLog() << "<select shader: Gouraud>";
+    break;
+  case 4:
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/normCel");
+    ofLog() << "<select shader: Cel>";
+    break;
+  case 5:
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/goosh");
+    break;
+  case 6:
+    renderer.shaderManager.reload();
+    renderer.shaderManager.load("shaders/flat");
+    break;
+  case 7:
+    renderer.update_texture_pbr();
+    renderer.shaderManager.load("shaders/pbr");
+    break;
+  default:
+    break;
+  }
+}
+
+void Application::setup_menu_scene_misc()
+{
+  menu_scene_misc = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_LEFT);
+  menu_scene_misc->addHeader("Misc");
+  misc_folder = menu_scene_misc->addFolder("Misc");
+
+  show_bezier_curve_button = misc_folder->addButton("Show Bezier Curve");
+  show_bezier_curve_button->onButtonEvent(this, &Application::courbe_bezier_button_pressed_datgui);
+  show_parametric_surface_button = misc_folder->addButton("Show Parametric Surface");
+  show_parametric_surface_button->onButtonEvent(this, &Application::surface_parametrique_button_pressed_datgui);
+}
+
+void Application::courbe_bezier_button_pressed_datgui(ofxDatGuiButtonEvent e)
+{
+  renderer.showBezierSpline = !renderer.showBezierSpline;
+  ofLog() << "<Courbe de bezier>";
+}
+
+void Application::surface_parametrique_button_pressed_datgui(ofxDatGuiButtonEvent e)
+{
+  renderer.showBezierSurface = !renderer.showBezierSurface;
+  ofLog() << "<Surface Parametrique>";
+}
+
 void Application::exit()
 {
   b_potato_pc.removeListener(this, &Application::specs_changed);
-  courbe_bezier_button.removeListener(this, &Application::courbe_bezier_button_pressed);
-  surface_parametrique_button.removeListener(this, &Application::surface_parametrique_button_pressed);
   button_reset.removeListener(this, &Application::button_reset_pressed);
   ofLog() << "<app::exit>";
 }
