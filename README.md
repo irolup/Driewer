@@ -32,7 +32,6 @@ We have used the following addons:
 * ofxAssimpModelLoader
 * ofxGui
 * ofxRayTracer
-* ofxShadersLibrary
 
 Inspiration
 -------------
