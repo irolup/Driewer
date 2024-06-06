@@ -19,7 +19,7 @@ void Application::setup()
   setup_menu_raytracer();
   setup_menu_graphics();
   setup_menu_scene_misc();
-
+  setup_menu_camera();
 }
 
 void Application::update()
@@ -63,9 +63,6 @@ void Application::draw()
 
   gui.draw();
   pbr_draw_gui();
-  menu_raytracer->draw();
-  menu_graphics->draw();
-  menu_scene_misc->draw();
 }
 
 void Application::reset()
@@ -185,47 +182,6 @@ void Application::keyReleased(int key)
     case 'i':
         is_key_press_i = false;
         break;
-    case 'z':
-        is_key_press_z = false;
-        ofLog() << "<fov:" << renderer.camera_fov << ">";
-        break;
-    case 'x':
-        is_key_press_x = false;
-        ofLog() << "<fov:" << renderer.camera_fov << ">";
-        break;
-
-    case 'g':
-        renderer.is_visible_grid = !renderer.is_visible_grid;
-        ofLog() << "<toggle grid:" << renderer.is_visible_grid << ">";
-        break;
-    case 'o':
-        renderer.is_camera_perspective = false;
-        renderer.setup_camera();
-        ofLog() << "<orthographic projection>";
-        break;
-    case 'p':
-        renderer.is_camera_perspective = true;
-        renderer.setup_camera();
-        ofLog() << "<perpective projection>";
-        break;
-    case 't':
-      renderer.is_visible_camera = !renderer.is_visible_camera;
-      ofLog() << "<toggle camera is visible:" << renderer.is_visible_camera << ">";
-      renderer.is_visible_frustum = !renderer.is_visible_frustum;
-      ofLog() << "<toggle frustum is visible:" << renderer.is_visible_frustum << ">";
-      break;
-    case '9':
-      //mettre cam active a front
-      renderer.camera_active = Camera::front;
-      renderer.setup_camera();
-      ofLog() << "<camera active: front>";
-      break;
-    case '0':
-      //mettre cam active a back
-      renderer.camera_active = Camera::back;
-      renderer.setup_camera();
-      ofLog() << "<camera active: back>";
-      break;
     //light control
     case OF_KEY_UP:
       is_key_press_up = false;
@@ -306,9 +262,6 @@ void Application::update_key_camera()
 
     renderer.is_camera_roll_left = is_key_press_y;
     renderer.is_camera_roll_right = is_key_press_i;
-
-    renderer.is_camera_fov_narrow = is_key_press_z;
-    renderer.is_camera_fov_wide = is_key_press_x;
 }
 
 void Application::update_key_light()
@@ -715,6 +668,84 @@ void Application::surface_parametrique_button_pressed_datgui(ofxDatGuiButtonEven
 {
   renderer.showBezierSurface = !renderer.showBezierSurface;
   ofLog() << "<Surface Parametrique>";
+}
+
+//setup menu camera
+void Application::setup_menu_camera()
+{
+  menu_camera = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
+  menu_camera->addHeader("Camera");
+  
+  camera_choices_dropdown = menu_camera->addDropdown("Camera", {"Front", "Back"});
+  camera_choices_dropdown->onDropdownEvent(this, &Application::on_camera_choices_dropdown);
+
+  camera_render_far_slider = menu_camera->addSlider("Render distance", 2, 500);
+  camera_render_far_slider->setValue(renderer.camera_far);
+  camera_render_far_slider->onSliderEvent(this, &Application::on_camera_render_far_slider);
+
+  //poroduit un warning [WARNING] :: Event Handler Not Set mais fonctionne
+  camera_fov_slider = menu_camera->addSlider("Field of view", 30, 120);
+  camera_fov_slider->setValue(renderer.camera_fov);
+  camera_fov_slider->onSliderEvent(this, &Application::on_camera_fov_slider);
+
+  //section pour afficher frustum aussi [WARNING] :: Event Handler Not Set mais fonctionne
+  camera_frustum_toggle = menu_camera->addToggle("Show frustum", false);
+  camera_frustum_toggle->onToggleEvent(this, &Application::on_camera_frustum_toggle);
+
+  //section pour activer ou desactiver la perspective
+  camera_perspective_toggle = menu_camera->addToggle("Perspective", true);
+  camera_perspective_toggle->onToggleEvent(this, &Application::on_camera_perspective_toggle);
+
+  //section speed qui est default a 250
+  camera_speed_slider = menu_camera->addSlider("Camera speed", 0, 500);
+  camera_speed_slider->setValue(renderer.speed_delta);
+  camera_speed_slider->onSliderEvent(this, &Application::on_camera_speed_slider);
+
+}
+
+void Application::on_camera_choices_dropdown(ofxDatGuiDropdownEvent e)
+{
+  switch (e.child)
+  {
+  case 0:
+    renderer.camera_active = Camera::front;
+    break;
+  case 1:
+    renderer.camera_active = Camera::back;
+    break;
+  default:
+    break;
+  }
+  renderer.setup_camera();
+}
+
+void Application::on_camera_render_far_slider(ofxDatGuiSliderEvent e)
+{
+  renderer.camera_far = e.value;
+  renderer.setup_camera();
+}
+
+void Application::on_camera_fov_slider(ofxDatGuiSliderEvent e)
+{
+  renderer.camera_fov = e.value;
+  renderer.setup_camera();
+}
+
+void Application::on_camera_frustum_toggle(ofxDatGuiToggleEvent e)
+{
+  renderer.is_visible_frustum = e.checked;
+}
+
+void Application::on_camera_perspective_toggle(ofxDatGuiToggleEvent e)
+{
+  renderer.is_camera_perspective = e.checked;
+  renderer.setup_camera();
+}
+
+void Application::on_camera_speed_slider(ofxDatGuiSliderEvent e)
+{
+  renderer.speed_delta = e.value;
+  //log pour la vitess de la camera
 }
 
 void Application::exit()

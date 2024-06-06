@@ -163,8 +163,6 @@ public:
     float time_last;
     float time_elapsed;
     //camera move
-    bool is_visible_grid;
-    bool is_visible_camera;
     bool is_visible_frustum;
     bool is_camera_move_left;
     bool is_camera_move_right;

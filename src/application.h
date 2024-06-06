@@ -42,9 +42,7 @@ public:
 
 
 
-  void courbe_bezier_button_pressed();
-  void surface_parametrique_button_pressed();
-  int selectedControlPointIndex = -1;
+
   
   ofParameterGroup materialParameters;
   vector<float> matetial_vector;
@@ -150,8 +148,31 @@ public:
   ofxDatGuiButton* show_parametric_surface_button;
   void courbe_bezier_button_pressed_datgui(ofxDatGuiButtonEvent e);
   void surface_parametrique_button_pressed_datgui(ofxDatGuiButtonEvent e);
-
+  void courbe_bezier_button_pressed();
+  void surface_parametrique_button_pressed();
+  int selectedControlPointIndex = -1;
+  
   //Gui pour parametre de camera
+  ofxDatGui* menu_camera;
+  void setup_menu_camera();
+  //dropdown pour choix de la camera
+  ofxDatGuiDropdown* camera_choices_dropdown;
+  void on_camera_choices_dropdown(ofxDatGuiDropdownEvent e);
+  //render distance
+  ofxDatGuiSlider* camera_render_far_slider;
+  void on_camera_render_far_slider(ofxDatGuiSliderEvent e);
+  //camera fov slider (default 60)
+  ofxDatGuiSlider* camera_fov_slider;
+  void on_camera_fov_slider(ofxDatGuiSliderEvent e);
+  //toggle pour activer ou desactiver le frustum
+  ofxDatGuiToggle* camera_frustum_toggle;
+  void on_camera_frustum_toggle(ofxDatGuiToggleEvent e);
+  //toggle pour activer ou desactiver la perspective
+  ofxDatGuiToggle* camera_perspective_toggle;
+  void on_camera_perspective_toggle(ofxDatGuiToggleEvent e);
+  //slider pour vitesse camera qui est speed_delta
+  ofxDatGuiSlider* camera_speed_slider;
+  void on_camera_speed_slider(ofxDatGuiSliderEvent e);
 
 
   void setup();

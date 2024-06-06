@@ -582,8 +582,6 @@ void Renderer::init_camera()
 
   speed_delta = 250.0f;
 
-  is_visible_grid = false;
-  is_visible_camera = false;
   is_visible_frustum = false;
 
   is_camera_move_left = false;
@@ -648,8 +646,6 @@ void Renderer::setup_camera()
 
   camera->setPosition(camera_position);
   camera->setOrientation(camera_orientation);
-
-  ofLog() << "<setup camera: " << camera_name << ">";
 }
 
 void Renderer::cam_reset()
