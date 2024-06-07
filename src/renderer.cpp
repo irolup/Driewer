@@ -995,22 +995,25 @@ void Renderer::pbr_reset()
   material_color_diffuse = ofColor(255, 255, 255);
   material_color_specular = ofColor(255, 255, 255);
 
+  material_brightness = 1.0f;
   material_metallic = 0.5f;
   material_roughness = 0.5f;
   material_occlusion = 1.0f;
-  material_brightness = 1.0f;
 
   material_fresnel_ior = glm::vec3(0.04f, 0.04f, 0.04f);
+
+  // paramètres de mappage tonal
+  tone_mapping_exposure = 1.0f;
+  tone_mapping_toggle = true;
+  tone_mapping_gamma = 2.2f;
+
 
   // paramètres de la lumière
   light_color = ofColor(255, 255, 255);
   light_intensity = 1.0f;
   light_motion = false;
 
-  // paramètres de mappage tonal
-  tone_mapping_exposure = 1.0f;
-  tone_mapping_toggle = true;
-  tone_mapping_gamma = 2.2f;
+
 
   // position initiale de la caméra
   offset_z = initial_z;

@@ -20,6 +20,7 @@ void Application::setup()
   setup_menu_graphics();
   setup_menu_scene_misc();
   setup_menu_camera();
+  setup_menu_light();
 }
 
 void Application::update()
@@ -288,6 +289,7 @@ void Application::updateLights(){
 
 void Application::updateMaterial(){
     
+  renderer.material.setColors(diffuse, ambient, specular, emissive);
   renderer.material.setColors(diffuse, ambient, specular, emissive);
   renderer.material.setShininess(shininess);
     
@@ -678,15 +680,16 @@ void Application::setup_menu_camera()
   
   camera_choices_dropdown = menu_camera->addDropdown("Camera", {"Front", "Back"});
   camera_choices_dropdown->onDropdownEvent(this, &Application::on_camera_choices_dropdown);
-
+  ofxDatGuiLog::quiet();
   camera_render_far_slider = menu_camera->addSlider("Render distance", 2, 500);
   camera_render_far_slider->setValue(renderer.camera_far);
   camera_render_far_slider->onSliderEvent(this, &Application::on_camera_render_far_slider);
 
-  //poroduit un warning [WARNING] :: Event Handler Not Set mais fonctionne
+  //poroduit un warning [WARNING] :: Event Handler Not Set mais fonctionne donc faire
   camera_fov_slider = menu_camera->addSlider("Field of view", 30, 120);
   camera_fov_slider->setValue(renderer.camera_fov);
   camera_fov_slider->onSliderEvent(this, &Application::on_camera_fov_slider);
+
 
   //section pour afficher frustum aussi [WARNING] :: Event Handler Not Set mais fonctionne
   camera_frustum_toggle = menu_camera->addToggle("Show frustum", false);
@@ -745,7 +748,35 @@ void Application::on_camera_perspective_toggle(ofxDatGuiToggleEvent e)
 void Application::on_camera_speed_slider(ofxDatGuiSliderEvent e)
 {
   renderer.speed_delta = e.value;
-  //log pour la vitess de la camera
+
+}
+
+void Application::setup_menu_light()
+{
+  menu_light = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
+  menu_light->addHeader("Shader control");
+  //ajouter le color picker pour la couleur ambiante pour la variable ambient
+  light_ambient_color_picker = menu_light->addColorPicker("Ambient color", ofColor(255, 255, 255));
+  light_ambient_color_picker->onColorPickerEvent(this, &Application::on_light_ambient_color_picker);
+  //ajouter le color picker pour la couleur diffuse
+  light_diffuse_color_picker = menu_light->addColorPicker("Diffuse color", ofColor(255, 255, 255));
+  light_diffuse_color_picker->onColorPickerEvent(this, &Application::on_light_diffuse_color_picker);
+}
+
+void Application::on_light_ambient_color_picker(ofxDatGuiColorPickerEvent e)
+{
+  //renderer.light_color = e.color;
+  ambient = e.color;
+  //log pour la couleur dans console
+  ofLog() << "<ambient color: " << light_shader_manager.material_color_ambient << ">";
+}
+
+void Application::on_light_diffuse_color_picker(ofxDatGuiColorPickerEvent e)
+{
+  //renderer.light_color = e.color;
+  light_shader_manager.material_color_diffuse = e.color;
+  //log pour la couleur dans console
+  ofLog() << "<diffuse color: " << light_shader_manager.material_color_diffuse << ">";
 }
 
 void Application::exit()

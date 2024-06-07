@@ -5,6 +5,7 @@
 #include "ofxAssimpModelLoader.h"
 #include "renderer.h"
 #include "ofxDatGui.h"
+#include "LightShaderManager.h"
 
 struct imgDimension{
   int width;
@@ -23,6 +24,7 @@ class Application : public ofBaseApp
 public:
 
   Renderer renderer;
+  LightShaderManager light_shader_manager;
 
   //Gui section
   ofxPanel gui;
@@ -174,6 +176,15 @@ public:
   ofxDatGuiSlider* camera_speed_slider;
   void on_camera_speed_slider(ofxDatGuiSliderEvent e);
 
+  //Gui pour parametre de lumiere/shader
+  ofxDatGui* menu_light;
+  void setup_menu_light();
+  //color picker pour ambiant color
+  ofxDatGuiColorPicker* light_ambient_color_picker;
+  void on_light_ambient_color_picker(ofxDatGuiColorPickerEvent e);
+  //color picker pour diffuse color
+  ofxDatGuiColorPicker* light_diffuse_color_picker;
+  void on_light_diffuse_color_picker(ofxDatGuiColorPickerEvent e);
 
   void setup();
   void update();
