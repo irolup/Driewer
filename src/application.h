@@ -153,6 +153,11 @@ public:
   void courbe_bezier_button_pressed();
   void surface_parametrique_button_pressed();
   int selectedControlPointIndex = -1;
+  //endroit section tesselation
+  ofxDatGuiButton* show_tessellation_sphere_button;
+  ofxDatGuiButton* show_tesseellation_cube_button;
+  void tessellation_sphere_pressed(ofxDatGuiButtonEvent e);
+  void tessellation_cube_pressed(ofxDatGuiButtonEvent e);
   
   //Gui pour parametre de camera
   ofxDatGui* menu_camera;

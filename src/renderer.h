@@ -272,6 +272,8 @@ public:
     void update_shader_pbr_second_texture();
 
     //section tesselation
+    bool show_tess_sphere;
+    bool show_tess_cube;
     ofShader shader_tessellation;
     ofVbo sphereVbo, boxVbo;
     float radius_tess;
@@ -282,6 +284,8 @@ public:
     void setup_tessellation();
     void setupVbos();
     void drawScene_tess();
+    void draw_tess_sphere();
+    void draw_tess_cube();
 
     void setup_potato_pc();
     void draw_potato_pc();

@@ -123,7 +123,11 @@ void Renderer::draw()
   drawLights();
   shaderManager.end();
   draw_cube_map();
-  drawScene_tess();
+  if(show_tess_sphere)
+  {
+    drawScene_tess();
+  }
+  
   camera->end();
 
 

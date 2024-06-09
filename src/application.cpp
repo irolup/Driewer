@@ -658,6 +658,13 @@ void Application::setup_menu_scene_misc()
   show_bezier_curve_button->onButtonEvent(this, &Application::courbe_bezier_button_pressed_datgui);
   show_parametric_surface_button = misc_folder->addButton("Show Parametric Surface");
   show_parametric_surface_button->onButtonEvent(this, &Application::surface_parametrique_button_pressed_datgui);
+
+  renderer.show_tess_sphere = true;
+  renderer.show_tess_cube = true;
+  show_tessellation_sphere_button =  misc_folder->addButton("Show tessellation sphere");
+  show_tessellation_sphere_button->onButtonEvent(this, &Application::tessellation_sphere_pressed);
+  show_tesseellation_cube_button = misc_folder->addButton("Show tessellation cube");
+  show_tesseellation_cube_button->onButtonEvent(this, &Application::tessellation_cube_pressed);
 }
 
 void Application::courbe_bezier_button_pressed_datgui(ofxDatGuiButtonEvent e)
@@ -670,6 +677,18 @@ void Application::surface_parametrique_button_pressed_datgui(ofxDatGuiButtonEven
 {
   renderer.showBezierSurface = !renderer.showBezierSurface;
   ofLog() << "<Surface Parametrique>";
+}
+
+void Application::tessellation_sphere_pressed(ofxDatGuiButtonEvent e)
+{
+  renderer.show_tess_sphere = !renderer.show_tess_sphere;
+  ofLog() << "<Tessellation Sphere>";
+}
+
+void Application::tessellation_cube_pressed(ofxDatGuiButtonEvent e)
+{
+  renderer.show_tess_cube = !renderer.show_tess_cube;
+  ofLog() << "<Tessellation Cube>";
 }
 
 //setup menu camera
