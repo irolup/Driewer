@@ -290,7 +290,6 @@ void Application::updateLights(){
 void Application::updateMaterial(){
     
   renderer.material.setColors(diffuse, ambient, specular, emissive);
-  renderer.material.setColors(diffuse, ambient, specular, emissive);
   renderer.material.setShininess(shininess);
     
 }
@@ -330,9 +329,6 @@ void Application::setupGui()
     gui.add(lightParameters);
     gui.add(materialParameters);
     gui.add(renderer.bUseTexture.set("Use Texture",true));
-
-    gui.add(tessLevelInner.set("INNER tess lev.", 1.0, 1.0, 5.0));
-    gui.add(tessLevelOuter.set("OUTER tess lev, ", 1.0, 1.0, 5.0));
 
     //lof usetexture
     ofLog() << "<usetexture: " << renderer.bUseTexture << ">";
@@ -659,12 +655,20 @@ void Application::setup_menu_scene_misc()
   show_parametric_surface_button = misc_folder->addButton("Show Parametric Surface");
   show_parametric_surface_button->onButtonEvent(this, &Application::surface_parametrique_button_pressed_datgui);
 
-  renderer.show_tess_sphere = true;
-  renderer.show_tess_cube = true;
+  renderer.show_tess_sphere = false;
+  renderer.show_tess_cube = false;
   show_tessellation_sphere_button =  misc_folder->addButton("Show tessellation sphere");
   show_tessellation_sphere_button->onButtonEvent(this, &Application::tessellation_sphere_pressed);
   show_tesseellation_cube_button = misc_folder->addButton("Show tessellation cube");
   show_tesseellation_cube_button->onButtonEvent(this, &Application::tessellation_cube_pressed);
+
+  //slider pour tessLevelInner
+  tessLevelInner.set("tessLevelInner", 1.0, 1.0, 5.0);
+  misc_folder->addSlider(tessLevelInner);
+  //slider pour tessLevelOuter
+  tessLevelOuter.set("tessLevelOuter", 1.0, 1.0, 5.0);
+  misc_folder->addSlider(tessLevelOuter);
+
 }
 
 void Application::courbe_bezier_button_pressed_datgui(ofxDatGuiButtonEvent e)

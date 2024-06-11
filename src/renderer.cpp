@@ -123,10 +123,7 @@ void Renderer::draw()
   drawLights();
   shaderManager.end();
   draw_cube_map();
-  if(show_tess_sphere)
-  {
-    drawScene_tess();
-  }
+  drawScene_tess();
   
   camera->end();
 
@@ -1181,6 +1178,19 @@ void Renderer::setupVbos()
 
 void Renderer::drawScene_tess()
 {
+  if(show_tess_sphere)
+  {
+    draw_tess_sphere();
+  }
+  if(show_tess_cube)
+  {
+    draw_tess_cube();
+  }
+}
+
+//NEED TO SEPRATE DE DRAWING IN 2 FUNCTIONS FOR EACH PRIMITIVE
+void Renderer::draw_tess_sphere()
+{
   shader_tessellation.begin();
   shader_tessellation.setUniform1f("u_tessLevelInner", tessLevelInner);
   shader_tessellation.setUniform1f("u_tessLevelOuter", tessLevelOuter);
@@ -1190,6 +1200,15 @@ void Renderer::drawScene_tess()
   ofRotate(ofGetElapsedTimef() * .2 * RAD_TO_DEG, 0, 1, 0);
   sphereVbo.drawElements(GL_PATCHES, sphereVbo.getNumIndices());
   ofPopMatrix();
+  shader_tessellation.end();
+
+}
+
+void Renderer::draw_tess_cube()
+{
+  shader_tessellation.begin();
+  shader_tessellation.setUniform1f("u_tessLevelInner", tessLevelInner);
+  shader_tessellation.setUniform1f("u_tessLevelOuter", tessLevelOuter);
   //BOX
   ofPushMatrix();
   ofTranslate(position_box_tess);
@@ -1197,6 +1216,7 @@ void Renderer::drawScene_tess()
   boxVbo.drawElements(GL_PATCHES,  boxVbo.getNumIndices());
   ofPopMatrix();
   shader_tessellation.end();
+
 }
 
 void Renderer::setup_texture_arbitrary()
