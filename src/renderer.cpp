@@ -117,7 +117,6 @@ void Renderer::draw()
   }
     
   ofDrawAxis(10);
-    
   shaderManager.begin();
   drawScene();
   drawLights();

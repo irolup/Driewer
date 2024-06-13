@@ -10,58 +10,8 @@ void LightShaderManager::load(string shaderName){
 //--------------------------------------------------------------
 
 void LightShaderManager::begin(){
-    
-    
+
     shader.begin();
-    
-    //shader.setUniformTexture("tex", (*tex), 1);
-
-    //shader.setUniformTexture("normalMapTex", (*normTex), 2);
-    
-    //shader.setUniformTexture("texture_metallic", (*metal), 3);
-    //shader.setUniformTexture("texture_roughness", (*roughness), 4);
-    //shader.setUniformTexture("texture_occlusion", (*occulsion), 5);
-    //shader.setUniformTexture("texture_normal", (*normTex), 5);
-
-	//material_color_ambient = ofColor(63, 63, 63);
-    //check if the material_color_ambient is not black
-    //log de la couleur ambinat
-	material_color_diffuse = ofColor(255, 255, 255);
-	material_color_specular = ofColor(255, 255, 255);
-
-	material_metallic = 0.5f;
-	material_roughness = 0.5f;
-	material_occlusion = 1.0f;
-	material_brightness = 1.0f;
-	material_fresnel_ior = glm::vec3(0.04f, 0.04f, 0.04f);
-	
-    light_intensity = 1.0f;
-	light_color = ofColor(255, 255, 255);
-    light_position = glm::vec3(50.0f, -175.0f, 1.0f);
-
-	tone_mapping_exposure = 1.0f;
-	tone_mapping_gamma = 2.2f;
-	tone_mapping_toggle = true;
-	
-	
-	shader.setUniform3f("material_color_ambient", material_color_ambient.r/255.0f, material_color_ambient.g/255.0f, material_color_ambient.b/255.0f);
-    shader.setUniform3f("material_color_diffuse", material_color_diffuse.r/255.0f, material_color_diffuse.g/255.0f, material_color_diffuse.b/255.0f);
-    shader.setUniform3f("material_color_specular", material_color_specular.r/255.0f, material_color_specular.g/255.0f, material_color_specular.b/255.0f);
-  
-    shader.setUniform1f("material_brightness", material_brightness);
-    shader.setUniform1f("material_metallic", material_metallic);
-    shader.setUniform1f("material_roughness", material_roughness);
-    shader.setUniform1f("material_occlusion", material_occlusion);
-
-	shader.setUniform3f("material_fresnel_ior", material_fresnel_ior);
-	
-    shader.setUniform1f("light_intensity", light_intensity);
-    shader.setUniform3f("light_color", light_color.r/255.0f, light_color.g/255.0f, light_color.b/255.0f);
-    shader.setUniform3f("light_position", light_position);
-
-    shader.setUniform1f("tone_mapping_exposure", tone_mapping_exposure);
-    shader.setUniform1f("tone_mapping_gamma", tone_mapping_gamma);
-    shader.setUniform1i("tone_mapping_toggle", tone_mapping_toggle);
 
     shader.setUniformTexture("texture_diffuse", (*tex), 1);
     shader.setUniformTexture("texture_metallic", (*metal), 2);
@@ -455,3 +405,4 @@ void LightShaderManager::setMaterialProperties(vector<unsigned char> & buffer, c
     *(reinterpret_cast<float *> (&buffer[0] + offset)) =
     mat->getShininess();
 }
+

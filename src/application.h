@@ -182,14 +182,23 @@ public:
   void on_camera_speed_slider(ofxDatGuiSliderEvent e);
 
   //Gui pour parametre de lumiere/shader
-  ofxDatGui* menu_light;
+  ofxDatGui* menu_material;
   void setup_menu_light();
   //color picker pour ambiant color
-  ofxDatGuiColorPicker* light_ambient_color_picker;
-  void on_light_ambient_color_picker(ofxDatGuiColorPickerEvent e);
+  ofxDatGuiColorPicker* material_ambient_color_picker;
+  void on_material_ambient_color_picker(ofxDatGuiColorPickerEvent e);
   //color picker pour diffuse color
-  ofxDatGuiColorPicker* light_diffuse_color_picker;
-  void on_light_diffuse_color_picker(ofxDatGuiColorPickerEvent e);
+  ofxDatGuiColorPicker* material_diffuse_color_picker;
+  void on_material_diffuse_color_picker(ofxDatGuiColorPickerEvent e);
+  //color picker pour specular color
+  ofxDatGuiColorPicker* material_specular_color_picker;
+  void on_material_specular_color_picker(ofxDatGuiColorPickerEvent e);
+  //slider pour emissive color
+  ofxDatGuiColorPicker* material_emissive_color_picker;
+  void on_material_emissive_color_picker(ofxDatGuiColorPickerEvent e);
+  //slider pour shininess
+  ofxDatGuiSlider* material_shininess_slider;
+  void on_material_shininess_slider(ofxDatGuiSliderEvent e);
 
   void setup();
   void update();

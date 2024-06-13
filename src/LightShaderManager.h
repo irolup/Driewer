@@ -44,29 +44,6 @@ public:
     
     ofShader* getShader() {return &shader; }
 
-
-    //section for the materials
-    ofColor material_color_ambient;
-    ofColor material_color_diffuse;
-    ofColor material_color_specular;
-    glm::vec3 material_fresnel_ior;
-    
-    float material_metallic;
-    float material_roughness;
-    float material_occlusion;
-    float material_brightness;
-
-    //section for the light
-    float light_intensity;
-    ofColor light_color;
-    glm::vec3 light_position;
-    
-    //section for the tone mapping
-    float tone_mapping_exposure;
-    float tone_mapping_gamma;
-    bool tone_mapping_toggle;
-
-    
 protected:
     
     ofShader shader;

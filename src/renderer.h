@@ -290,6 +290,9 @@ public:
     void setup_potato_pc();
     void draw_potato_pc();
     
+    //section for the materials
+    ofColor material_color_ambient_protedted;
+
     void setup();
     void reset();
     void update();

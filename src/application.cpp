@@ -18,8 +18,8 @@ void Application::setup()
 
   setup_menu_raytracer();
   setup_menu_graphics();
-  setup_menu_scene_misc();
-  setup_menu_camera();
+  //setup_menu_scene_misc();
+  //setup_menu_camera();
   setup_menu_light();
 }
 
@@ -587,7 +587,7 @@ void Application::start_raytracer(menu_raytracer_options opt)
 void Application::setup_menu_graphics()
 {
   available_shader = {"Blinn Phong", "Phong", "Lambert", 
-                      "Gouraud", "Cel", "goosh", "flat", "pbr"};
+                      "Gouraud", "Cel", "goosh", "flat"};
   menu_graphics = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_LEFT);
   menu_graphics->addHeader("Graphics");
 
@@ -634,10 +634,6 @@ void Application::onShaderEvent(ofxDatGuiDropdownEvent e)
   case 6:
     renderer.shaderManager.reload();
     renderer.shaderManager.load("shaders/flat");
-    break;
-  case 7:
-    renderer.update_texture_pbr();
-    renderer.shaderManager.load("shaders/pbr");
     break;
   default:
     break;
@@ -776,30 +772,58 @@ void Application::on_camera_speed_slider(ofxDatGuiSliderEvent e)
 
 void Application::setup_menu_light()
 {
-  menu_light = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
-  menu_light->addHeader("Shader control");
+  menu_material = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
+  menu_material->addHeader("Material control not pbr");
   //ajouter le color picker pour la couleur ambiante pour la variable ambient
-  light_ambient_color_picker = menu_light->addColorPicker("Ambient color", ofColor(255, 255, 255));
-  light_ambient_color_picker->onColorPickerEvent(this, &Application::on_light_ambient_color_picker);
+  material_ambient_color_picker = menu_material->addColorPicker("Ambient color", ofColor(255, 255, 255));
+  material_ambient_color_picker->onColorPickerEvent(this, &Application::on_material_ambient_color_picker);
   //ajouter le color picker pour la couleur diffuse
-  light_diffuse_color_picker = menu_light->addColorPicker("Diffuse color", ofColor(255, 255, 255));
-  light_diffuse_color_picker->onColorPickerEvent(this, &Application::on_light_diffuse_color_picker);
+  material_diffuse_color_picker = menu_material->addColorPicker("Diffuse color", ofColor(255, 255, 255));
+  material_diffuse_color_picker->onColorPickerEvent(this, &Application::on_material_diffuse_color_picker);
+
+  //ajouter le color picker pour la couleur specular
+  material_specular_color_picker = menu_material->addColorPicker("Specular color", ofColor(255, 255, 255));
+  material_specular_color_picker->onColorPickerEvent(this, &Application::on_material_specular_color_picker);
+
+  //ajouter le color picker pour la couleur emissive
+  material_emissive_color_picker = menu_material->addColorPicker("Emissive color", ofColor(255, 255, 255));
+  material_emissive_color_picker->onColorPickerEvent(this, &Application::on_material_emissive_color_picker);
+
+  //ajouter le slider pour shininess
+  material_shininess_slider = menu_material->addSlider("Shininess", 0, 128);
+  material_shininess_slider->onSliderEvent(this, &Application::on_material_shininess_slider);
+
 }
 
-void Application::on_light_ambient_color_picker(ofxDatGuiColorPickerEvent e)
+void Application::on_material_ambient_color_picker(ofxDatGuiColorPickerEvent e)
 {
-  //renderer.light_color = e.color;
   ambient = e.color;
   //log pour la couleur dans console
-  ofLog() << "<ambient color: " << light_shader_manager.material_color_ambient << ">";
+  ofLog() << "<ambient color: " << ambient << ">";
 }
 
-void Application::on_light_diffuse_color_picker(ofxDatGuiColorPickerEvent e)
+void Application::on_material_diffuse_color_picker(ofxDatGuiColorPickerEvent e)
 {
-  //renderer.light_color = e.color;
-  light_shader_manager.material_color_diffuse = e.color;
-  //log pour la couleur dans console
-  ofLog() << "<diffuse color: " << light_shader_manager.material_color_diffuse << ">";
+  diffuse = e.color;
+  ofLog() << "<diffuse color: " << diffuse << ">";
+}
+
+void Application::on_material_specular_color_picker(ofxDatGuiColorPickerEvent e)
+{
+  specular = e.color;
+  ofLog() << "<specular color: " << specular << ">";
+}
+
+void Application::on_material_emissive_color_picker(ofxDatGuiColorPickerEvent e)
+{
+  emissive = e.color;
+  ofLog() << "<emissive color: " << emissive << ">";
+}
+
+void Application::on_material_shininess_slider(ofxDatGuiSliderEvent e)
+{
+  shininess = e.value;
+  ofLog() << "<shininess: " << shininess << ">";
 }
 
 void Application::exit()
