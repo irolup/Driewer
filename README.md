@@ -51,4 +51,4 @@ Here are some examples of the shaders in action:
 ![PBR (Physically-Based Rendering) Shader](https://raw.githubusercontent.com/irolup/Driewer/master/example_screenshots/pbr_shader.png)
 
 Screenshot of the last update(from 13/06/2024)
-![Last update with menus](https://raw.githubusercontent.com/irolup/Driewer/master/example_screenshots/update_1.png)
+![Last update with menus](https://raw.githubusercontent.com/irolup/Driewer/master/example_screenshots/update_1~2.png)
