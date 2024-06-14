@@ -1,5 +1,3 @@
-// IFT3100H23 ~ pbr_330_fs.glsl
-
 #version 330
 #pragma include "lights.glsl"
 #pragma include "material.glsl"

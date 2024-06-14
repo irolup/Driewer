@@ -18,9 +18,8 @@ void Application::setup()
 
   setup_menu_raytracer();
   setup_menu_graphics();
-  //setup_menu_scene_misc();
-  //setup_menu_camera();
-  setup_menu_light();
+  setup_menu_scene_misc();
+  setup_menu_camera();
 }
 
 void Application::update()
@@ -696,8 +695,7 @@ void Application::setup_menu_camera()
 {
   menu_camera = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
   menu_camera->addHeader("Camera");
-  
-  camera_choices_dropdown = menu_camera->addDropdown("Camera", {"Front", "Back"});
+  camera_choices_dropdown = menu_camera->addDropdown("Cameras", {"Front", "Back"});
   camera_choices_dropdown->onDropdownEvent(this, &Application::on_camera_choices_dropdown);
   ofxDatGuiLog::quiet();
   camera_render_far_slider = menu_camera->addSlider("Render distance", 2, 500);
@@ -769,63 +767,6 @@ void Application::on_camera_speed_slider(ofxDatGuiSliderEvent e)
   renderer.speed_delta = e.value;
 
 }
-
-void Application::setup_menu_light()
-{
-  menu_material = new ofxDatGui(ofxDatGuiAnchor::BOTTOM_RIGHT);
-  menu_material->addHeader("Material control not pbr");
-  //ajouter le color picker pour la couleur ambiante pour la variable ambient
-  material_ambient_color_picker = menu_material->addColorPicker("Ambient color", ofColor(255, 255, 255));
-  material_ambient_color_picker->onColorPickerEvent(this, &Application::on_material_ambient_color_picker);
-  //ajouter le color picker pour la couleur diffuse
-  material_diffuse_color_picker = menu_material->addColorPicker("Diffuse color", ofColor(255, 255, 255));
-  material_diffuse_color_picker->onColorPickerEvent(this, &Application::on_material_diffuse_color_picker);
-
-  //ajouter le color picker pour la couleur specular
-  material_specular_color_picker = menu_material->addColorPicker("Specular color", ofColor(255, 255, 255));
-  material_specular_color_picker->onColorPickerEvent(this, &Application::on_material_specular_color_picker);
-
-  //ajouter le color picker pour la couleur emissive
-  material_emissive_color_picker = menu_material->addColorPicker("Emissive color", ofColor(255, 255, 255));
-  material_emissive_color_picker->onColorPickerEvent(this, &Application::on_material_emissive_color_picker);
-
-  //ajouter le slider pour shininess
-  material_shininess_slider = menu_material->addSlider("Shininess", 0, 128);
-  material_shininess_slider->onSliderEvent(this, &Application::on_material_shininess_slider);
-
-}
-
-void Application::on_material_ambient_color_picker(ofxDatGuiColorPickerEvent e)
-{
-  ambient = e.color;
-  //log pour la couleur dans console
-  ofLog() << "<ambient color: " << ambient << ">";
-}
-
-void Application::on_material_diffuse_color_picker(ofxDatGuiColorPickerEvent e)
-{
-  diffuse = e.color;
-  ofLog() << "<diffuse color: " << diffuse << ">";
-}
-
-void Application::on_material_specular_color_picker(ofxDatGuiColorPickerEvent e)
-{
-  specular = e.color;
-  ofLog() << "<specular color: " << specular << ">";
-}
-
-void Application::on_material_emissive_color_picker(ofxDatGuiColorPickerEvent e)
-{
-  emissive = e.color;
-  ofLog() << "<emissive color: " << emissive << ">";
-}
-
-void Application::on_material_shininess_slider(ofxDatGuiSliderEvent e)
-{
-  shininess = e.value;
-  ofLog() << "<shininess: " << shininess << ">";
-}
-
 void Application::exit()
 {
   b_potato_pc.removeListener(this, &Application::specs_changed);

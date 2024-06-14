@@ -1,5 +1,3 @@
-// IFT3100H23 ~ pbr_330_vs.glsl
-
 #version 330
 
 // attributs de sommet
