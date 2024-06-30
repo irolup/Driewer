@@ -8,7 +8,7 @@ This project requires:
 Description of the Project
 -------------------------
 
-This project represents our first attempt at creating a graphics engine using shaders written in GLSL. It integrates the use of textures, materials, and lighting.
+This project represents our first attempt at creating a graphics engine using shaders written in GLSL. It integrates the use of textures, materials, and lighting.*This project started from a school project.
 
 Sources
 --------
